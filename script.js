@@ -287,20 +287,19 @@ document.addEventListener("click", (event) => {
       container.appendChild(card);
     });
 
+  
   } catch (error) {
     console.error("EDEN VIDEO:", error);
 
     container.replaceChildren();
 
     const message = document.createElement("p");
-    message.textContent = "動画を読み込めませんでした。";
+    message.textContent =
+      "動画取得エラー：" + error.message;
 
-    const link = document.createElement("a");
-    link.href = "https://www.youtube.com/@EDEN__0_0__Official";
-    link.target = "_blank";
-    link.rel = "noopener noreferrer";
-    link.textContent = "EDEN OFFICIAL YOUTUBE ↗";
+    message.style.color = "#ffffff";
+    message.style.overflowWrap = "anywhere";
 
-    container.append(message, link);
+    container.append(message);
   }
 })();
