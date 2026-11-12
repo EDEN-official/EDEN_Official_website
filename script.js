@@ -229,93 +229,78 @@ document.addEventListener("click", (event) => {
   });
 });
 
+
 (async function () {
-  const API_KEY = "ここにYouTubeのAPIキー";
-  const HANDLE = "@EDEN__0_0__Official";
+  const CHANNEL_ID = "UCy3uHoPxXaPtnTCC0UquGjw";
   const container = document.getElementById("eden-video-list");
 
+  if (!container) return;
+
+  const feedURL =
+    `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
+
+  const apiURL =
+    "https://api.rss2json.com/v1/api.json?rss_url=" +
+    encodeURIComponent(feedURL);
+
   try {
-    // チャンネル情報を取得
-    const channelUrl = new URL(
-      "https://www.googleapis.com/youtube/v3/channels"
-    );
-    channelUrl.search = new URLSearchParams({
-      part: "contentDetails",
-      forHandle: HANDLE,
-      key: API_KEY
-    });
+    const response = await fetch(apiURL);
 
-    const channelResponse = await fetch(channelUrl);
-    if (!channelResponse.ok) throw new Error("チャンネル情報を取得できません");
+    if (!response.ok) {
+      throw new Error("RSS取得エラー: " + response.status);
+    }
 
-    const channelData = await channelResponse.json();
-    const uploadsId =
-      channelData.items?.[0]?.contentDetails?.relatedPlaylists?.uploads;
+    const data = await response.json();
 
-    if (!uploadsId) throw new Error("アップロード一覧が見つかりません");
+    if (data.status !== "ok" || !data.items?.length) {
+      throw new Error("動画一覧を取得できません");
+    }
 
-    // 最新動画を取得
-    const videosUrl = new URL(
-      "https://www.googleapis.com/youtube/v3/playlistItems"
-    );
-    videosUrl.search = new URLSearchParams({
-      part: "snippet",
-      playlistId: uploadsId,
-      maxResults: "3",
-      key: API_KEY
-    });
-
-    const videosResponse = await fetch(videosUrl);
-    if (!videosResponse.ok) throw new Error("動画一覧を取得できません");
-
-    const videosData = await videosResponse.json();
-
-    const videos = (videosData.items || []).filter(item =>
-      item.snippet?.resourceId?.videoId
-    );
-
-    if (!videos.length) throw new Error("表示できる動画がありません");
-
+    const videos = data.items.slice(0, 3);
     container.replaceChildren();
 
-    videos.forEach(item => {
-      const videoId = item.snippet.resourceId.videoId;
-      const title = item.snippet.title;
+    videos.forEach(video => {
+      const videoId = video.guid.split(":").pop();
+      const title = video.title;
 
       const card = document.createElement("article");
       card.className = "eden-video__item";
 
-      const player = document.createElement("iframe");
-      player.className = "eden-video__player";
-      player.src =
-        "https://www.youtube-nocookie.com/embed/" +
-        encodeURIComponent(videoId);
-      player.title = title;
-      player.loading = "lazy";
-      player.allow =
-        "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
-      player.allowFullscreen = true;
-      player.referrerPolicy = "strict-origin-when-cross-origin";
+      const link = document.createElement("a");
+      link.href = video.link;
+      link.target = "_blank";
+      link.rel = "noopener noreferrer";
+      link.className = "eden-video__thumbnail";
+
+      const image = document.createElement("img");
+      image.src =
+        `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
+      image.alt = title;
+      image.loading = "lazy";
 
       const heading = document.createElement("h3");
       heading.className = "eden-video__name";
       heading.textContent = title;
 
-      card.append(player, heading);
-      container.append(card);
+      link.appendChild(image);
+      card.append(link, heading);
+      container.appendChild(card);
     });
+
   } catch (error) {
     console.error("EDEN VIDEO:", error);
-    container.textContent =
-      "動画を読み込めませんでした。YouTubeチャンネルをご覧ください。";
+
+    container.replaceChildren();
+
+    const message = document.createElement("p");
+    message.textContent = "動画を読み込めませんでした。";
 
     const link = document.createElement("a");
     link.href = "https://www.youtube.com/@EDEN__0_0__Official";
     link.target = "_blank";
     link.rel = "noopener noreferrer";
-    link.textContent = "EDEN公式YouTubeへ";
-    container.append(link);
+    link.textContent = "EDEN OFFICIAL YOUTUBE ↗";
+
+    container.append(message, link);
   }
 })();
-
-
