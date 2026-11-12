@@ -895,3 +895,47 @@ header {
   }
 }
 
+/* EDEN VIDEO thumbnails */
+.eden-video__grid {
+  display: grid;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  gap: 24px;
+  width: 100%;
+}
+
+.eden-video__item {
+  min-width: 0;
+}
+
+.eden-video__thumbnail {
+  display: block;
+  overflow: hidden;
+  aspect-ratio: 16 / 9;
+  background: #070B14;
+}
+
+.eden-video__thumbnail img {
+  display: block;
+  width: 100%;
+  height: 100%;
+  object-fit: cover;
+  transition: transform .4s ease;
+}
+
+.eden-video__thumbnail:hover img {
+  transform: scale(1.05);
+}
+
+.eden-video__name {
+  margin-top: 12px;
+  font-size: 14px;
+  line-height: 1.7;
+}
+
+@media (max-width: 700px) {
+  .eden-video__grid {
+    grid-template-columns: 1fr;
+    gap: 25px;
+  }
+}
+
