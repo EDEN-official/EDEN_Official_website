@@ -230,76 +230,162 @@ document.addEventListener("click", (event) => {
 });
 
 
+
 (async function () {
   const CHANNEL_ID = "UCy3uHoPxXaPtnTCC0UquGjw";
+  const UPLOADS_ID = "UU" + CHANNEL_ID.slice(2);
   const container = document.getElementById("eden-video-list");
 
   if (!container) return;
 
-  const feedURL =
+  const FEED_URL =
     `https://www.youtube.com/feeds/videos.xml?channel_id=${CHANNEL_ID}`;
 
-  const apiURL =
-    "https://api.rss2json.com/v1/api.json?rss_url=" +
-    encodeURIComponent(feedURL);
-
-  try {
-    const response = await fetch(apiURL);
-
-    if (!response.ok) {
-      throw new Error("RSS取得エラー: " + response.status);
-    }
-
-    const data = await response.json();
-
-    if (data.status !== "ok" || !data.items?.length) {
-      throw new Error("動画一覧を取得できません");
-    }
-
-    const videos = data.items.slice(0, 3);
+  // 動画カードを作成
+  function renderVideos(videos) {
     container.replaceChildren();
 
-    videos.forEach(video => {
-      const videoId = video.guid.split(":").pop();
-      const title = video.title;
-
+    videos.slice(0, 3).forEach(video => {
       const card = document.createElement("article");
       card.className = "eden-video__item";
 
       const link = document.createElement("a");
+      link.className = "eden-video__thumbnail";
       link.href = video.link;
       link.target = "_blank";
       link.rel = "noopener noreferrer";
-      link.className = "eden-video__thumbnail";
 
       const image = document.createElement("img");
       image.src =
-        `https://i.ytimg.com/vi/${videoId}/hqdefault.jpg`;
-      image.alt = title;
+        `https://i.ytimg.com/vi/${video.id}/hqdefault.jpg`;
+      image.alt = video.title;
       image.loading = "lazy";
 
       const heading = document.createElement("h3");
       heading.className = "eden-video__name";
-      heading.textContent = title;
+      heading.textContent = video.title;
 
       link.appendChild(image);
       card.append(link, heading);
       container.appendChild(card);
     });
+  }
 
-  
-  } catch (error) {
-    console.error("EDEN VIDEO:", error);
+  // RSS2JSONで取得
+  async function getFromRSS2JSON() {
+    const url =
+      "https://api.rss2json.com/v1/api.json?rss_url=" +
+      encodeURIComponent(FEED_URL);
 
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("RSS2JSON error");
+
+    const data = await response.json();
+
+    if (data.status !== "ok" || !data.items?.length) {
+      throw new Error("RSS2JSON data error");
+    }
+
+    return data.items.slice(0, 3).map(item => {
+      const id = item.guid.split(":").pop();
+
+      return {
+        id,
+        title: item.title,
+        link: `https://www.youtube.com/watch?v=${id}`
+      };
+    });
+  }
+
+  // 別経路でRSS取得
+  async function getFromAlternative() {
+    const url =
+      "https://api.allorigins.win/raw?url=" +
+      encodeURIComponent(FEED_URL);
+
+    const response = await fetch(url);
+    if (!response.ok) throw new Error("Alternative RSS error");
+
+    const xml = await response.text();
+    const doc = new DOMParser().parseFromString(
+      xml,
+      "application/xml"
+    );
+
+    if (doc.querySelector("parsererror")) {
+      throw new Error("XML parse error");
+    }
+
+    const entries = [...doc.querySelectorAll("entry")];
+
+    const videos = entries.slice(0, 3).map(entry => {
+      const id =
+        entry.getElementsByTagNameNS(
+          "http://www.youtube.com/xml/schemas/2015",
+          "videoId"
+        )[0]?.textContent;
+
+      const title = entry.querySelector("title")?.textContent;
+
+      if (!id || !title) return null;
+
+      return {
+        id,
+        title,
+        link: `https://www.youtube.com/watch?v=${id}`
+      };
+    }).filter(Boolean);
+
+    if (!videos.length) {
+      throw new Error("No videos found");
+    }
+
+    return videos;
+  }
+
+  // 最終手段：YouTube公式アップロード一覧
+  function showYouTubePlaylist() {
     container.replaceChildren();
 
-    const message = document.createElement("p");
-    message.textContent =
-      "動画取得エラー：" + error.message;
+    const player = document.createElement("iframe");
 
-    message.style.color = "#ffffff";
-    message.style.overflowWrap = "anywhere";
+    player.className = "eden-video__player";
+    player.src =
+      `https://www.youtube.com/embed?listType=playlist&list=${UPLOADS_ID}`;
 
-    container.append(message);
+    player.title = "EDEN 最新アップロード動画";
+    player.loading = "lazy";
+    player.allow =
+      "accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share";
+    player.allowFullscreen = true;
+
+    player.style.width = "100%";
+    player.style.aspectRatio = "16 / 9";
+    player.style.border = "0";
+
+    container.appendChild(player);
+  }
+
+  // 実行
+  try {
+    const videos = await getFromRSS2JSON();
+    renderVideos(videos);
+    console.log("EDEN VIDEO: RSS2JSON success");
+
+  } catch (error1) {
+    console.warn("EDEN VIDEO: RSS2JSON failed", error1);
+
+    try {
+      const videos = await getFromAlternative();
+      renderVideos(videos);
+      console.log("EDEN VIDEO: Alternative RSS success");
+
+    } catch (error2) {
+      console.warn("EDEN VIDEO: Alternative RSS failed", error2);
+
+      // 取得サービスが両方失敗した場合
+      showYouTubePlaylist();
+      console.log("EDEN VIDEO: YouTube playlist fallback");
+    }
   }
 })();
