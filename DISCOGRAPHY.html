@@ -1,0 +1,1485 @@
+
+<div id="eden-discography">
+  <style>
+    #eden-discography {
+      --blue: #8bbcff;
+      --white: #f5f8ff;
+      font-family: "Yu Mincho", "Hiragino Mincho ProN",
+        "Noto Serif JP", serif;
+      color: var(--white);
+      background:
+        radial-gradient(ellipse at 50% 0%, #244e85 0%, transparent 55%),
+        linear-gradient(160deg, #101d39, #070b18 75%);
+      padding: 48px 22px;
+      box-sizing: border-box;
+      width: 100%;
+      overflow: hidden;
+    }
+
+    #eden-discography * {
+      box-sizing: border-box;
+    }
+
+    #eden-discography .eden-heading {
+      text-align: center;
+      margin-bottom: 42px;
+    }
+
+    #eden-discography .eden-kicker {
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      letter-spacing: 5px;
+      color: var(--blue);
+      margin-bottom: 14px;
+    }
+
+    #eden-discography h1 {
+      font-size: clamp(28px, 5vw, 42px);
+      font-weight: 400;
+      letter-spacing: 7px;
+      margin: 0;
+    }
+
+    #eden-discography .eden-subtitle {
+      margin-top: 15px;
+      font-size: 12px;
+      letter-spacing: 3px;
+      color: #b4c6df;
+    }
+
+    #eden-discography .eden-line {
+      width: 42px;
+      height: 1px;
+      background: var(--blue);
+      margin: 24px auto 0;
+    }
+
+    /* カテゴリー切り替え */
+    #eden-discography .eden-filters {
+      display: flex;
+      justify-content: center;
+      flex-wrap: wrap;
+      gap: 10px;
+      max-width: 1000px;
+      margin: 0 auto 34px;
+    }
+
+    #eden-discography .eden-filter {
+      min-width: 112px;
+      padding: 11px 20px;
+      border: 1px solid rgba(145, 185, 238, .45);
+      background: rgba(10, 24, 48, .55);
+      color: #c9dcf5;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      cursor: pointer;
+      transition: background .2s, color .2s, border-color .2s;
+    }
+
+    #eden-discography .eden-filter:hover,
+    #eden-discography .eden-filter.is-active {
+      color: #fff;
+      background: #244e85;
+      border-color: #a8ceff;
+    }
+
+    #eden-discography .eden-card[hidden] {
+      display: none !important;
+    }
+
+    #eden-discography .eden-grid {
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 30px 20px;
+      max-width: 1000px;
+      margin: 0 auto;
+    }
+
+    #eden-discography .eden-card {
+      min-width: 0;
+    }
+
+    #eden-discography .eden-cover {
+      position: relative;
+      aspect-ratio: 1 / 1;
+      overflow: hidden;
+      background:
+        radial-gradient(circle at 50% 40%,
+          #497bb5 0%, #192e54 38%, #080e20 78%);
+      border: 1px solid rgba(164, 201, 255, .25);
+    }
+
+    #eden-discography .eden-cover img {
+      display: block;
+      width: 100%;
+      height: 100%;
+      max-width: 100%;
+      object-fit: cover;
+      object-position: center;
+      transition: transform .5s ease, opacity .3s ease;
+    }
+
+    #eden-discography .eden-card:hover .eden-cover img {
+      transform: scale(1.04);
+    }
+
+    /* ジャケットをクリックできるようにする */
+    #eden-discography .eden-open-detail {
+      display: block;
+      width: 100%;
+      height: 100%;
+      padding: 0;
+      border: 0;
+      background: transparent;
+      cursor: pointer;
+      font: inherit;
+      color: inherit;
+    }
+
+    #eden-discography .eden-open-detail:hover img {
+      opacity: .8;
+    }
+
+    #eden-discography .eden-placeholder {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-direction: column;
+      text-align: center;
+      padding: 10px;
+    }
+
+    #eden-discography .eden-placeholder span {
+      font-family: Arial, sans-serif;
+      font-size: 9px;
+      letter-spacing: 5px;
+      color: #a9ceff;
+    }
+
+    #eden-discography .eden-placeholder strong {
+      font-size: clamp(20px, 3vw, 30px);
+      font-weight: 400;
+      letter-spacing: 4px;
+      margin-top: 12px;
+    }
+
+    #eden-discography .eden-info {
+      padding: 16px 2px 0;
+    }
+
+    #eden-discography .eden-date {
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      letter-spacing: 2px;
+      color: #91b9ee;
+    }
+
+    #eden-discography h2 {
+      font-size: 17px;
+      font-weight: 400;
+      line-height: 1.7;
+      letter-spacing: 1px;
+      margin: 8px 0 14px;
+      overflow-wrap: anywhere;
+    }
+
+    #eden-discography .eden-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    #eden-discography .eden-links a {
+      display: inline-block;
+      text-decoration: none;
+      color: #e8f2ff;
+      border: 1px solid #526b8e;
+      padding: 8px 11px;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      letter-spacing: 1px;
+      transition: background .2s, border-color .2s;
+    }
+
+    #eden-discography .eden-links a:hover {
+      background: #24466e;
+      border-color: #a8ceff;
+    }
+
+    #eden-discography .eden-footer {
+      text-align: center;
+      margin-top: 55px;
+      padding-top: 20px;
+      border-top: 1px solid rgba(164, 201, 255, .2);
+      font-family: Arial, sans-serif;
+      font-size: 9px;
+      letter-spacing: 4px;
+      color: #8fa9ca;
+    }
+
+    /* 詳細ポップアップ */
+    #eden-discography .eden-modal[hidden] {
+      display: none !important;
+    }
+
+    #eden-discography .eden-modal {
+      position: fixed;
+      inset: 0;
+      z-index: 999999;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      padding: 16px;
+      background: rgba(3, 7, 20, .82);
+      backdrop-filter: blur(6px);
+    }
+
+    #eden-discography .eden-modal-panel {
+      position: relative;
+      width: min(720px, 100%);
+      max-height: 88vh;
+      overflow-y: auto;
+      padding: 28px;
+      border: 1px solid rgba(164, 201, 255, .4);
+      border-radius: 5px;
+      background:
+        radial-gradient(ellipse at 50% 0%, #244e85 0%, transparent 65%),
+        linear-gradient(160deg, #101d39, #070b18 90%);
+      color: #f5f8ff;
+      box-shadow: 0 18px 65px rgba(0, 0, 0, .5);
+      font-family: "Yu Mincho", "Hiragino Mincho ProN",
+        "Noto Serif JP", serif;
+    }
+
+    #eden-discography .eden-modal-close {
+      display: block;
+      position: absolute;
+      top: 8px;
+      right: 8px;
+      z-index: 2;
+      width: 36px;
+      height: 36px;
+      margin: 0;
+      border: 1px solid rgba(164, 201, 255, .5);
+      border-radius: 50%;
+      background: #101d39;
+      color: #fff;
+      font-size: 24px;
+      line-height: 1;
+      cursor: pointer;
+    }
+
+    #eden-discography .eden-modal-layout {
+      display: grid;
+      grid-template-columns: minmax(0, 220px) minmax(0, 1fr);
+      gap: 26px;
+      align-items: start;
+      clear: both;
+    }
+
+    #eden-discography .eden-modal-cover {
+      display: block;
+      width: 100%;
+      height: auto;
+      border: 1px solid rgba(164, 201, 255, .3);
+    }
+
+    #eden-discography .eden-modal-kicker {
+      font-family: Arial, sans-serif;
+      font-size: 9px;
+      letter-spacing: 3px;
+      color: var(--blue);
+      margin: 0 0 12px;
+    }
+
+    #eden-discography .eden-modal-title {
+      font-size: clamp(22px, 4vw, 30px);
+      font-weight: 400;
+      line-height: 1.6;
+      letter-spacing: 2px;
+      overflow-wrap: anywhere;
+      margin: 0 0 8px;
+    }
+
+    #eden-discography .eden-modal-date {
+      color: #91b9ee;
+      font-family: Arial, sans-serif;
+      font-size: 11px;
+      letter-spacing: 1px;
+      margin: 0 0 22px;
+    }
+
+    #eden-discography .eden-modal-section {
+      border-top: 1px solid rgba(164, 201, 255, .25);
+      padding-top: 14px;
+      margin-top: 16px;
+    }
+
+    #eden-discography .eden-modal-section h3 {
+      font-family: Arial, sans-serif;
+      color: var(--blue);
+      font-size: 10px;
+      font-weight: 400;
+      letter-spacing: 3px;
+      margin: 0 0 9px;
+    }
+
+    #eden-discography .eden-modal-section p {
+      color: #e2ebf9;
+      font-size: 13px;
+      line-height: 1.9;
+      white-space: pre-line;
+      overflow-wrap: anywhere;
+      margin: 0;
+    }
+
+    #eden-discography .eden-modal-links {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 8px;
+    }
+
+    #eden-discography .eden-modal-links a {
+      display: inline-block;
+      text-decoration: none;
+      color: #e8f2ff;
+      border: 1px solid #526b8e;
+      padding: 8px 11px;
+      font-family: Arial, sans-serif;
+      font-size: 10px;
+      letter-spacing: 1px;
+    }
+
+    #eden-discography .eden-modal-links a:hover {
+      background: #24466e;
+      border-color: #a8ceff;
+    }
+
+    #eden-discography .eden-no-links {
+      color: #b4c6df;
+      font-size: 12px;
+    }
+
+    @media (max-width: 600px) {
+      #eden-discography {
+        padding: 35px 14px;
+      }
+
+      #eden-discography .eden-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        gap: 25px 12px;
+      }
+
+      #eden-discography .eden-filters {
+        gap: 7px;
+        margin-bottom: 26px;
+      }
+
+      #eden-discography .eden-filter {
+        min-width: 0;
+        flex: 1 1 calc(50% - 7px);
+        padding: 10px 8px;
+        font-size: 9px;
+      }
+
+      #eden-discography .eden-heading {
+        margin-bottom: 30px;
+      }
+
+      #eden-discography h1 {
+        letter-spacing: 4px;
+      }
+
+      #eden-discography h2 {
+        font-size: 14px;
+      }
+
+      #eden-discography .eden-links a {
+        padding: 7px 8px;
+        font-size: 9px;
+      }
+
+      #eden-discography .eden-modal {
+        padding: 10px;
+      }
+
+      #eden-discography .eden-modal-panel {
+        padding: 18px;
+        max-height: 92vh;
+      }
+
+      #eden-discography .eden-modal-layout {
+        grid-template-columns: 1fr;
+        gap: 18px;
+      }
+
+      #eden-discography .eden-modal-cover {
+        width: min(220px, 75%);
+        margin: 0 auto;
+      }
+    }
+
+    @media (max-width: 360px) {
+      #eden-discography .eden-grid {
+        grid-template-columns: 1fr;
+      }
+    }
+
+
+/* ヘッダーとジャケット一覧の重なりを防ぐ */
+#eden-discography {
+  position: relative;
+  isolation: isolate;
+  padding-top: 140px !important;
+}
+
+/* ジャケット一覧の上部に余白を確保 */
+#eden-discography .eden-grid {
+  position: relative;
+  z-index: 1;
+  margin-top: 0;
+}
+
+/* スマホ */
+@media (max-width: 600px) {
+  #eden-discography {
+    padding-top: 110px !important;
+  }
+}
+
+  </style>
+
+ <!DOCTYPE html>
+<html lang="ja">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="theme-color" content="#090909">
+<meta name="description" content="ARTIST OFFICIAL WEBSITE">
+<title>DISCOGRAPHY</title>
+
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Serif+JP:wght@400;500;600;700;800;900&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+<script src="script.js" defer></script>
+
+<link rel="stylesheet"
+ href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.2/css/all.min.css">
+
+
+</head>
+
+<body>
+<header id="header">
+  <a href="index.html" class="logo">EDEN</a>
+  <button class="menu-btn" id="menuBtn" type="button" aria-label="メニューを開く" aria-expanded="false" aria-controls="nav">MENU ☰</button>
+  <nav class="nav" id="nav" aria-label="メインメニュー">
+    <a href="https://sites.google.com/view/eden-no-uta/news">NEWS</a>
+    <a href="DISCOGRAPHY.html">DISCOGRAPHY</a>
+    <a href="PROFILE.html">PROFILE</a>
+    <a href="BIOGRAPHY.html">BIOGRAPHY</a>
+    <a href="Music/home.html">MUSIC</a>
+
+<div class="nav-dropdown">
+  <button class="nav-dropdown__toggle" type="button"
+          aria-expanded="false">
+    SHOP <span class="nav-arrow">↓</span>
+  </button>
+
+  <div class="nav-dropdown__menu">
+    <a href="https://suzuri.jp/EDEN__0_0__" target="_blank"
+       rel="noopener noreferrer">SUZURI ↗</a>
+    <a href="https://edennosono.booth.pm/" target="_blank"
+       rel="noopener noreferrer">BOOTH ↗</a>
+  </div>
+</div>
+<div class="header-sns">
+  <a href="https://x.com/あなたのID"
+     target="_blank" rel="noopener noreferrer"
+     aria-label="X">
+    <i class="fa-brands fa-x-twitter"></i>
+  </a>
+
+  <a href="https://www.instagram.com/あなたのID/"
+     target="_blank" rel="noopener noreferrer"
+     aria-label="Instagram">
+    <i class="fa-brands fa-instagram"></i>
+  </a>
+
+  <a href="https://www.youtube.com/@EDEN__0_0__Official"
+     target="_blank" rel="noopener noreferrer"
+     aria-label="YouTube">
+    <i class="fa-brands fa-youtube"></i>
+  </a>
+
+<a href="https://lin.ee/9m7woIW2" target="_blank"
+   rel="noopener noreferrer" aria-label="LINE">
+  <i class="fa-brands fa-line"></i>
+</a>
+
+
+</div>
+
+  </nav>
+
+</header>
+
+<main>
+
+  <div class="eden-filters" role="group" aria-label="作品カテゴリー">
+    <button type="button" class="eden-filter is-active" data-filter="all" aria-pressed="true">ALL</button>
+    <button type="button" class="eden-filter" data-filter="album" aria-pressed="false">ALBUM</button>
+    <button type="button" class="eden-filter" data-filter="single" aria-pressed="false">SINGLE</button>
+    <button type="button" class="eden-filter" data-filter="other" aria-pressed="false">OTHER</button>
+  </div>
+
+  <div class="eden-grid">
+
+<!-- 作品 01：楽曲情報は下のJavaScriptでも編集 -->
+
+<article class="eden-card" data-category="album">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="25" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1pg05eW0EsvHx316WDNHAI0ma87eLd7ja&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2027.01.11</div>
+         <h2>5th Album<br>「Antos」</h2>
+
+        <div class="eden-links">
+          <a href="Music/ALBUM/05 Antos.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>            
+          <a href="https://youtube.com/playlist?list=PLAvhZ2FI6vgg&si=6G520MorYmFPj-vP"
+            target="_blank" rel="noopener noreferrer">YOUTUBE ↗</a>
+        </div>
+      </div>
+    </article>
+
+<!-- 作品 01：楽曲情報は下のJavaScriptでも編集 -->
+
+<article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="24" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1geWw4SDK4oqrFiUITyhVidUlZZrxlVdH&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2027.01.01</div>
+         <h2>10th Single<br>「NEVER LAND」</h2>
+
+        <div class="eden-links">
+          <a href="Music/Single/NEVER LAND.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+
+<!-- 作品 01：楽曲情報は下のJavaScriptでも編集 -->
+
+<article class="eden-card" data-category="album">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="23" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1FKwRzXj72UXcVX3vNZZdh45l6G0hcgfO&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2026.06.06</div>
+         <h2>BEST Album<br>「V -Chapter of EDEN-」</h2>
+
+        <div class="eden-links">
+          <a href="Music/BESTOther/V.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+          <a href="https://youtube.com/playlist?list=PLG8cJPIp15Awm_srMvrg1IsapqN4sO3eR&si=Tbsjn7XXsxCBkghk"
+            target="_blank" rel="noopener noreferrer">YOUTUBE ↗</a>
+        </div>
+      </div>
+    </article>
+
+
+<!-- 作品 01：楽曲情報は下のJavaScriptでも編集 -->
+
+<article class="eden-card" data-category="other">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="22" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1wu-7uQGtFbp8kOiNgF-7k1IuIXIZErQm&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2026.05.23</div>
+         <h2>LIVE<br>「EDEN New Single Dear Release Cmmemoration LIVE at 2024.3.12」</h2>
+
+        <div class="eden-links">
+          <a href="Music/LIVE/02 20240312.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+<!-- 作品 01：楽曲情報は下のJavaScriptでも編集 -->
+
+<article class="eden-card" data-category="single">
+          <div class="eden-cover">
+        <img
+            src="https://drive.google.com/thumbnail?id=1u13grqWkQMXmySPA57AaXCxX2xlcQTKY&sz=w1000"
+            alt="5AL">
+      </div>
+
+      <div class="eden-info">
+        <div class="eden-date">2026.04.29</div>
+         <h2>Digital Single<br>「EDEN no SONO」</h2>
+      </div>
+    </article>
+
+
+
+    <!-- 作品 01：楽曲情報は下のJavaScriptでも編集 -->
+
+<article class="eden-card" data-category="album">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="21" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1LXvNaLSSckhXiRfy1_yc5TkWWPFDgEhJ&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2026.03.13</div>
+         <h2>Mini Album<br>「PROGRESS」</h2>
+
+        <div class="eden-links">
+          <a href="Music/BESTOther/PROGRESS.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="single">
+          <div class="eden-cover">
+        <img
+            src="https://drive.google.com/thumbnail?id=1QPi1b4m4qAoQVmsti9qnEpsCDyqABw6T&sz=w1000"
+            alt="5AL">
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2026.01.23</div>
+         <h2>Digital Single<br>「identity」</h2>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="20" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1VH6MSResvzF3F_fpLRTBKfvm4tp5kSH9&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2026.01.12</div>
+         <h2>9th Single<br>「結錆（けっせい）」</h2>
+
+        <div class="eden-links">
+          <a href="Music/Single/けっせい.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+
+<article class="eden-card" data-category="single">
+          <div class="eden-cover">
+        <img
+            src="https://drive.google.com/thumbnail?id=1aFUgSbez4RSSsQY8b48jWkb0SalayhB6&sz=w1000"
+            alt="5AL">
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2025.12.28</div>
+         <h2>Digital Single<br>「今だけは。」</h2>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="19" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=10xERDykmKFcNOs4eQj7ufOD6XJH1U5P7&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2025.10.04</div>
+         <h2>8th Single<br>「愛 My 溺 -Love My Drown-」</h2>
+
+        <div class="eden-links">
+          <a href="Music/Single/愛 My 溺.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+
+<article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="18" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1gnLUrkmYl1HBSVZXJwUyRUVDSikJEaW8&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2025.10.04</div>
+         <h2>7th Single<br>「BElive」</h2>
+
+        <div class="eden-links">
+          <a href="Music/Single/BElive.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="album">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="17" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=14ezncawBJcCZ16K9-fM-TsRkNz_3VEI0&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2025.07.01</div>
+         <h2>4th Album<br>「Shining」</h2>
+
+        <div class="eden-links">
+          <a href="Music/ALBUM/04-1 Shining.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+          <a href="https://youtube.com/playlist?list=PLG8cJPIp15AyxAn_hTY4TMiY7VJ_X4WfO&si=5lJB8aHVJjNUtDMm"
+            target="_blank" rel="noopener noreferrer">YOUTUBE ↗</a>
+        </div>
+      </div>
+    </article>
+
+
+<article class="eden-card" data-category="album">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="16" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1oTWiIq9R8fO178pbqeQ_h0j4a26vPbT6&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+         <div class="eden-date">2025.07.01</div>
+         <h2>4th Album<br>「Darkness」</h2>
+
+        <div class="eden-links">
+          <a href="Music/ALBUM/04-2 Darkness.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+          <a href="https://youtube.com/playlist?list=PLG8cJPIp15AxXn8n6waFKWRvVRvOfM3cL&si=tN2b493SWU9eWwUM"
+            target="_blank" rel="noopener noreferrer">YOUTUBE ↗</a>
+        </div>
+      </div>
+    </article>
+
+
+<article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="15" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1Tndr1wA2nEYJalX4i36OKpHUGIkW2uTG&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2025.06.23</div>
+         <h2>Chapter Single<br>「消滅論」</h2>
+
+        <div class="eden-links">
+          <a href="Music/BESTOther/消滅論.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="14" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1cmgQTBW9VsUrgmJc0Kngj-c2lpsWpJsJ&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2025.06.16</div>
+         <h2>Chapter Single<br>「Life taste」</h2>
+
+        <div class="eden-links">
+          <a href="Music/BESTOther/Life taste.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="other">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="13" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1O5D9s_Ns0q533u4TP6HWPFYHzZsRfgww&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2025.04.01</div>
+         <h2>LIVE<br>「EDEN STUDIO LIVE 「Hallo My WORLD Vol.1」」</h2>
+
+        <div class="eden-links">
+          <a href="Music/LIVE/01 STUDIO.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="12" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1YLV0e-z0hyyY2t7caa1QKk4k11qzPmqW&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2025.03.13</div>
+         <h2>6th Single<br>「Believe in Promise」</h2>
+
+        <div class="eden-links">
+          <a href="Music/Single/Believe in Promise.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="single">
+          <div class="eden-cover">
+        <img
+            src="https://drive.google.com/thumbnail?id=1G_i8vu8mi49HMCgNl7fVN0UVPNMvYp-1&sz=w1000"
+            alt="5AL">
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2025.01.01</div>
+         <h2>Digital Single<br>「TERMINAL」</h2>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="album">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="11" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1Bsn8Gsijx3N2Gy4vBiq0agsHO3-Jduwu&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2024.12.25</div>
+         <h2>Concept Album<br>「The SYMPHONY of MUSEUM」</h2>
+
+        <div class="eden-links">
+          <a href="Music/BESTOther/01TSM.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="single">
+          <div class="eden-cover">
+        <img
+            src="https://drive.google.com/thumbnail?id=1wzo7E87hPXhgJd95czWMh0MCh64jG6Z8&sz=w1000"
+            alt="5AL">
+      </div>
+
+      <div class="eden-info">
+        <div class="eden-date">2024.12.17</div>
+         <h2>Digital Single<br>「御伽話」</h2>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="single">
+
+          <div class="eden-cover">
+        <img
+            src="https://drive.google.com/thumbnail?id=1rbjK-NUXu7zOSm_c4FE4eRdxzRdhF3Y9&sz=w1000"
+            alt="5AL">
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2024.12.16</div>
+         <h2>Digital Single<br>「幸せであること。 (The SYMPHONY of MUSEUM Version)」</h2>
+
+      </div>
+    </article>
+
+<article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="10" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1gZRIL1cXx9NUgTz7WxOO0HrcJf1f0WjB&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2024.11.18</div>
+         <h2>5th Single <br>「最大幸福数」</h2>
+
+        <div class="eden-links">
+          <a href="Music/Single/最大幸福数.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="album">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="9" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1iLxqla09Rf1AKYoXyeTy01nrlg41a9z9&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2024.03.23</div>
+         <h2>3rd Album <br>「Dear My Friend」</h2>
+
+        <div class="eden-links">
+          <a href="Music/ALBUM/03 Dear My Friend.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+          <a href="https://youtube.com/playlist?list=PLG8cJPIp15AwCJ04kMVn4rtQFn1gLcwL0&si=7UCj3fmFkjSZGKHx"
+            target="_blank" rel="noopener noreferrer">YOUTUBE ↗</a>
+        </div>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="8" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1UVerzr5fIsxd8w3MnxpvsPBa-fG7lQi4&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2024.03.13</div>
+         <h2>4th Single <br>「Dear」</h2>
+
+        <div class="eden-links">
+          <a href="Music/Single/Dear.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="single">
+          <div class="eden-cover">
+        <img
+            src="https://drive.google.com/thumbnail?id=1GQDubdi74bjTEj09F5f1vnOp7-rKwdlF&sz=w1000"
+            alt="5AL">
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2023.12.15</div>
+         <h2>Digital Single <br>「太陽華（ひまわり）」</h2>
+      </div>
+    </article>
+
+    <article class="eden-card" data-category="single">
+          <div class="eden-cover">
+        <img
+            src="https://drive.google.com/thumbnail?id=1qqMbEYSWlY71Z6oXQoTo8V5HwjNuSN-P&sz=w1000"
+            alt="5AL">
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2023.11.20</div>
+         <h2>Digital Single <br>「Life taste」</h2>
+      </div>
+    </article>
+
+    <!-- 作品 01：楽曲情報は下のJavaScriptでも編集 -->
+    <article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="7" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1v0txsEvV1bo1XdmFJ0ZfFB7W4XyGYd__&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2023.11.18</div>
+         <h2>3rd Single <br>「消滅論」</h2>
+
+        <div class="eden-links">
+          <a href="Music/Single/消滅論.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 作品 01：楽曲情報は下のJavaScriptでも編集 -->
+    <article class="eden-card" data-category="album">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="6" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1Gr5PHSrMEzmNA0GyqXZsZmGb1TpAvVf_&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2021.11.18</div>
+         <h2>2nd Album <br>「U-18」</h2>
+
+        <div class="eden-links">
+          <a href="Music/ALBUM/02 U-18.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+          <a href="https://youtube.com/playlist?list=PLG8cJPIp15AxhWhBjqoSatTZ7R5F0B3Om&si=620Gsewsud2WM5pz"
+            target="_blank" rel="noopener noreferrer">YOUTUBE ↗</a>
+        </div>
+      </div>
+    </article>
+
+
+    <!-- 作品 01：楽曲情報は下のJavaScriptでも編集 -->
+    <article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="5" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1gCbv7CRCTnoCaX-Fn_HffAdpzBZbFLZ1&sz=w5000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2021.11.08</div>
+         <h2>2nd Single<br>「You are My Hope Drug」</h2>
+
+        <div class="eden-links">
+          <a href="Music/Single/You are My Hope Drug.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 作品 02：ジャケットを設定したらクリック対応に変更できます -->
+    <article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="4" aria-label="楽曲タイトルの詳細を表示">
+         <img
+  src="https://drive.google.com/thumbnail?id=1xCuRMRJm9BP2Mw1X5BiThKBcSBBYsJnU&sz=w5000"
+  alt="楽曲ジャケット2">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2021.09.20</div>
+        <h2>1st Single<br>「ピンクフライヤー」</h2>
+        <div class="eden-links">
+      <a href="Music/Single/ピンクフライヤー.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+    <!-- 作品 03 -->
+   <article class="eden-card" data-category="album">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="3" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1n0GQ-jUBLc4aBf1DaSgCFHaT-3UmwB0e&sz=w5000"
+            alt="楽曲ジャケット">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2021.09.09</div>
+        <h2>1st Album<br>「to you」</h2>
+        <div class="eden-links">
+          <a href="Music/ALBUM/01 to you.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+          <a href="https://youtube.com/playlist?list=PLG8cJPIp15Axqz3iU-5DKRFGRIFw5NeK7&si=9lcSCdOEg4Zk0ieZ"
+            target="_blank" rel="noopener noreferrer">YOUTUBE ↗</a>
+        </div>
+      </div>
+    </article>
+
+<article class="eden-card" data-category="album">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="2" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=17NX8a8yBP4HQqnrzvDDmfSkN9va8ru1O&sz=w1000"
+            alt="5AL">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2021.05.06</div>
+        <h2>1st DEMO Album<br>「genes」</h2>
+        <div class="eden-links">
+          <a href="Music/ALBUM/00 genes.html"
+            target="_blank" rel="noopener noreferrer">SOUND LABO ↗</a>
+        </div>
+      </div>
+    </article>
+
+
+ <article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="1" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1T6LZ5OGmTyoYZVZgvT5DCvlyY8j2MDuR&sz=w1000"
+            alt="楽曲ジャケット">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2021.05.06</div>
+        <h2>2nd DEMO Single<br>「げろめいど」</h2>
+
+      </div>
+    </article>
+
+ <article class="eden-card" data-category="single">
+      <div class="eden-cover">
+        <button type="button" class="eden-open-detail"
+          data-song="0" aria-label="楽曲タイトルの詳細を表示">
+          <img
+            src="https://drive.google.com/thumbnail?id=1NfXVZ7GySqdxFvwubeIuV5n-v9ewf1sR&sz=w1000"
+            alt="楽曲ジャケット">
+        </button>
+      </div>
+      <div class="eden-info">
+        <div class="eden-date">2021.02.11</div>
+        <h2>1st DEMO Single<br>「君のそばに。」</h2>
+
+      </div>
+    </article>
+  </div>
+
+  <footer class="eden-footer"><p>
+    EDEN OFFICIAL WEBSITE<br>
+    © DREAM RECORD & EDEN All Rights Reserved.
+  </p>
+</footer>
+
+  <!-- 詳細ポップアップ：ページ内に一度だけ配置 -->
+  <div class="eden-modal" hidden role="dialog"
+    aria-modal="true" aria-labelledby="eden-modal-title">
+    <div class="eden-modal-panel">
+      <button type="button" class="eden-modal-close"
+        aria-label="閉じる">×</button>
+
+      <div class="eden-modal-layout">
+        <div>
+          <img class="eden-modal-cover" src="" alt="">
+        </div>
+        <div>
+          <p class="eden-modal-kicker">EDEN / MUSIC DETAILS</p>
+          <h2 class="eden-modal-title" id="eden-modal-title"></h2>
+          <p class="eden-modal-date"></p>
+
+          <section class="eden-modal-section">
+            <h3>ABOUT THIS SONG</h3>
+            <p class="eden-modal-description"></p>
+          </section>
+
+        </div>
+      </div>
+    </div>
+  </div>
+
+
+
+  <script>
+    (function () {
+      const root = document.getElementById("eden-discography");
+      if (!root || root.dataset.modalReady === "true") return;
+      root.dataset.modalReady = "true";
+      /*
+       * カテゴリーは各 article の data-category で指定します。
+       * album / single / other のいずれかを設定してください。
+       * 例：<article class="eden-card" data-category="album">
+       */
+      const cards = Array.from(root.querySelectorAll(".eden-grid .eden-card"));
+      const filterButtons = Array.from(root.querySelectorAll(".eden-filter"));
+
+      function applyFilter(category) {
+        cards.forEach(card => {
+          // 未指定の作品は OTHER として扱います。
+          const cardCategory = card.dataset.category || "other";
+          card.hidden = !(category === "all" || cardCategory === category);
+        });
+
+        filterButtons.forEach(button => {
+          const active = button.dataset.filter === category;
+          button.classList.toggle("is-active", active);
+          button.setAttribute("aria-pressed", String(active));
+        });
+      }
+
+      filterButtons.forEach(button => {
+        button.addEventListener("click", () => {
+          applyFilter(button.dataset.filter);
+        });
+      });
+
+      applyFilter("all");
+
+      /*
+       * 楽曲情報の編集場所
+       * 配信URLは実際の楽曲ページのURLに差し替えてください。
+       */
+      const songs = [
+        {
+          title: "君のそばに。",
+          date: "2021.02.11 RELEASE",
+          image: "",
+          description: "収録内容\n01. 君のそばに。\n02. 希死念慮\n03. 幻の吟",
+        },
+        {
+          title: "げろめいど",
+          date: "2021.05.06 RELEASE",
+          image: "",
+          description: "収録内容\n01.げろめいど\n02.げろめいど (Instrumental)",
+        },
+        {
+          title: "genes",
+          date: "2021.05.06 RELEASE",
+          image: "",
+          description: "収録内容\n01.genes\n02.君のそばに。 (DEMO)\n03.眠らない僕の感情 (DEMO)\n04.げろめいど (DEMO)\n05.僕と君では (DEMO)\n06.希死念慮 (DEMO)\n07.幻の吟 (DEMO)",
+        },
+        {
+          title: "to you",
+          date: "2021.09.09 RELEASE",
+          image: "",
+          description: "収録内容\n01.OPENING\n02.げろめいど\n03.希死念慮\n04.君のそばに。\n05.僕と君では\n06.Find-OUT\n07.理想的思考中毒者\n08.幻の吟\n09.当たり前の仲で。\n10.ENDING",
+        },
+        {
+          title: "ピンクフライヤー",
+          date: "2021.09.20 RELEASE",
+          image: "",
+          description: "収録内容\n01.ピンクフライヤー\n02.U-17",
+        },
+        {
+          title: "You are My Hope Drug",
+          date: "2021.11.08 RELEASE",
+          image: "",
+          description: "収録内容\n01.You are My Hope Drug\n02.Thanatos",
+        },
+        {
+          title: "U-18",
+          date: "2021.11.18 RELEASE",
+          image: "",
+          description: "収録内容\n01.END of START\n02.Thanatos (EDEN Version)\n03.You are My Hope Drug\n04.ピンクフライヤー\n05.アーロストス\n06.ミニクイ\n07.生存メロディー\n08.U-17\n09.Αριο κλειδ\n10.O to X",
+        },
+        {
+          title: "消滅論",
+          date: "2023.11.18 RELEASE",
+          image: "",
+          description: "収録内容\n01.消滅論\n02.グロリアス\n03.消滅論(Instrumental)\n04.グロリアス(Instrumental)",
+        },
+        {
+          title: "Dear",
+          date: "2024.03.13 RELEASE",
+          image: "",
+          description: "収録内容\n01.Dear\n02.あの日の記憶 (Acoustic DEMO on 5th February, 2023)\n03.Dear (Instrumental)",
+        },
+        {
+          title: "Dear My Friend",
+          date: "2024.03.23 RELEASE",
+          image: "",
+          description: "収録内容\n01.over true ～悲しみの欠片～\n02.DAYS\n03.絶望した君へ\n04.ラブメイカー\n05.I want to be...\n06.demize\n07.消滅論\n08.あの日から僕は...\n09.太陽華（ひまわり）\n10.グロリアス（Dear My Friend Version）\n11.Dear\n12.大切な記憶\n13.Life taste",
+        },
+        {
+          title: "最大幸福数",
+          date: "2024.11.18 RELEASE",
+          image: "",
+          description: "収録内容\n01.最大幸福数\n02.幸せであること。\n03.I want to be...(EDEN New Single Dear Release Cmmemoration LIVE at 2024.3.12より)\n04.最大幸福数（Instrumental)",
+        },
+        {
+          title: "The SYMPHONY of MUSEUM",
+          date: "2024.12.25 RELEASE",
+          image: "",
+          description: "収録内容\n01.The SYMPHONY of MUSEUM\n02.TERMINAL (The SYMPHONY of MUSEUM Version)\n03.from to you. (The SYMPHONY of MUSEUM Version)\n04.エンドレス・ブルー・ノート (The SYMPHONY of MUSEUM Version)\n05.SUMMER ROCK VACATION (The SYMPHONY of MUSEUM Version)\n06.雨路 -アマミチ- (The SYMPHONY of MUSEUM Version)\n07.カクシタ感情\n08.今だけは。 (The SYMPHONY of MUSEUM Version)\n09.Interlude ～悲しみの欠片～\n10.I LIKE YOU (The SYMPHONY of MUSEUM Version)\n11.demize (The SYMPHONY of MUSEUM Version)\n12.Dear (The SYMPHONY of MUSEUM Version)\n13.アンコール (The SYMPHONY of MUSEUM Version)\n14.グロリアス (The SYMPHONY of MUSEUM Version)\n15.I LOVE YOU (The SYMPHONY of MUSEUM Version)\n16.シャイニング・ロード (The SYMPHONY of MUSEUM Version)\n17.好きだよ (The SYMPHONY of MUSEUM Version)\n18.あの日から僕は... (The SYMPHONY of MUSEUM Version)\n19.幸せであること。 (The SYMPHONY of MUSEUM Version)\n20.太陽華(ひまわり) (The SYMPHONY of MUSEUM Version)\n21.The SYMPHONY of MUSEUM -reprise-\n22.最大幸福数 (The SYMPHONY of MUSEUM Version)\n23.Life taste (The SYMPHONY of MUSEUM Version)\n24.ending",
+        },
+        {
+          title: "Believe in Promise",
+          date: "2025.03.13 RELEASE",
+          image: "",
+          description: "収録内容\n01.Believe in Promise\n02.Dear\n03.最大幸福数\n04.from to you. (The SYMPHONY of MUSEUM Version)",
+        },
+        {
+          title: "EDEN STUDIO LIVE 「Hallo My WORLD Vol.1",
+          date: "2025.04.01 RELEASE",
+          image: "",
+          description: "収録内容\n01.Love Story\n02.TERMINAL (EDEN STUDIO LIVE 「Hallo My WORLD Vol.1」)\n03.DAYS (EDEN STUDIO LIVE 「Hallo My WORLD Vol.1」)\n04.当たり前の仲で。 (EDEN STUDIO LIVE 「Hallo My WORLD Vol.1」)\n05.ラブメイカー (EDEN STUDIO LIVE 「Hallo My WORLD Vol.1」)\n06.GReed of Me (EDEN STUDIO LIVE 「Hallo My WORLD Vol.1」)\n07.I want to be... (EDEN STUDIO LIVE 「Hallo My WORLD Vol.1」)\n08.あの日から僕は...\n09.消滅論 (EDEN STUDIO LIVE 「Hallo My WORLD Vol.1」)\n10.グロリアス (EDEN STUDIO LIVE 「Hallo My WORLD Vol.1」)\n11.太陽華(ひまわり) (EDEN STUDIO LIVE 「Hallo My WORLD Vol.1」)\n12.最大幸福数 (EDEN STUDIO LIVE 「Hallo My WORLD Vol.1」)",
+        },
+        {
+          title: "Life taste",
+          date: "2025.06.16 RELEASE",
+          image: "",
+          description: "収録内容\n01.Life taste(Chapter of EDEN Version)\n02.太陽華(Chapter of EDEN Version)\n03.御伽話(Chapter of EDEN Version)",
+        },
+
+
+        {
+          title: "消滅論",
+          date: "2025.06.23 RELEASE",
+          image: "",
+          description: "収録内容\n01.消滅論(Chapter of EDEN Version)\n02.グロリアス(Chapter of EDEN Version)\n03.幸せであること。(Chapter of EDEN Version)",
+        },
+
+        {
+          title: "Darkness",
+          date: "2025.07.01 RELEASE",
+          image: "",
+          description: "収録内容\n01.Darkness\n02.御伽話\n03.GReed of Me\n04.僕の意味\n05.雨路 -アマミチ-\n06.幸せであること。\n07.「失物理論」",
+        },
+
+        {
+          title: "Shining",
+          date: "2025.07.01 RELEASE",
+          image: "",
+          description: "収録内容\n01.TERMINAL\n02.from to you.\n03.エンドレス・ブルー・ノート\n04.ゼラニウム\n05.Believe in Promise\n06.シャイニング・ロード\n07.最大幸福数",
+        },
+
+        {
+          title: "BElieve",
+          date: "2025.10.04 RELEASE",
+          image: "",
+          description: "収録内容\n01.BElieve\n02.夏色コンフェッション！(LIVE on FRee Time Space「BElieve」)",
+        },
+
+        {
+          title: "愛 My 溺 -Love My Drown-",
+          date: "2025.10.04 RELEASE",
+          image: "",
+          description: "収録内容\n01.愛 My 溺 -Love My Drown-\n02.Believe in Promise (LIVE on FRee Time Space「BElieve」)",
+        },
+
+        {
+          title: "結錆(けっせい)",
+          date: "2026.01.12 RELEASE",
+          image: "",
+          description: "収録内容\n01.結錆(けっせい)\n02.＃わがままスマイル",
+        },
+
+        {
+          title: "PROGRESS",
+          date: "2026.03.13 RELEASE",
+          image: "",
+          description: "収録内容\n01.FIVE and DAYS\n02.from to you.\n03.最大幸福数\n04.Dear\n05.Believe in Promise\n06.PROGRESS",
+        },
+
+
+
+        {
+          title: "EDEN New Single Dear Release Cmmemoration LIVE at 2024.3.12",
+          date: "2026.03.13 RELEASE",
+          image: "",
+          description: "収録内容\n01.DAYS(EDEN New Single Dear Release Cmmemoration LIVE at 2024.3.12)\n02.グロリアス(EDEN New Single Dear Release Cmmemoration LIVE at 2024.3.12)\n03.I want to be...(EDEN New Single Dear Release Cmmemoration LIVE at 2024.3.12)\n04.ピンクフライヤー(EDEN New Single Dear Release Cmmemoration LIVE at 2024.3.12)\n05.ラブメイカー(EDEN New Single Dear Release Cmmemoration LIVE at 2024.3.12)\n06.太陽華(ひまわり)(EDEN New Single Dear Release Cmmemoration LIVE at 2024.3.12)\n07.最大幸福数(EDEN New Single Dear Release Cmmemoration LIVE at 2024.3.12)\n08.Dear(EDEN New Single Dear Release Cmmemoration LIVE at 2024.3.12)\n09.Life taste(EDEN New Single Dear Release Cmmemoration LIVE at 2024.3.12)",
+        },
+
+        {
+          title: "V -Chapter of EDEN-",
+          date: "2026.06.06 RELEASE",
+          image: "",
+          description: "収録内容\n01.The SYMPHONY of MUSEUM\n02.EDEN no SONO\n03.TERMINAL\n04.当たり前の仲で。\n05.君のそばに。\n06.ピンクフライヤー\n07.You are My Hope Drug\n08.御伽話\n09.I want to be...\n10.ラブメイカー\n11.グロリアス\n12.Dear\n13.太陽華\n14.BELIVE IN PROMISE\n15.幸せであること。\n16.シャイニング・ロード\n17.最大幸福数\n18.結錆（けっせい）\n19.PROGRESS\n20.同じ空の下で。",
+        },
+
+        {
+          title: "NEVER LAND",
+          date: "2027.01.01 RELEASE",
+          image: "",
+          description: "収録内容\n01.NEVER LAND\n02.ルールブック\n03.シグナル",
+        },
+
+        {
+          title: "Antos",
+          date: "2027.01.11 RELEASE",
+          image: "",
+          description: "収録内容\n01.プレリュード ～Anthos～\n02.NEVER LAND\n03.Village\n04.tiME\n05.い・つ・か\n06.シグナル (Album Version)\n07.OVER IS MIND\n08.愛 My 溺 -Love My Drown-(Album Version)\n09.One Step Generation\n10.pastel collar\n11.輝と果実",
+        },
+
+      ];
+
+      const modal = root.querySelector(".eden-modal");
+      const closeButton = root.querySelector(".eden-modal-close");
+      const $ = selector => modal.querySelector(selector);
+      let previousButton = null;
+
+      function closeModal() {
+        modal.hidden = true;
+        document.body.style.overflow = "";
+        if (previousButton) previousButton.focus();
+      }
+
+      function openModal(index, button) {
+        const song = songs[index];
+        if (!song) return;
+
+        previousButton = button;
+        $(".eden-modal-cover").src =
+          song.image || button.querySelector("img")?.src || "";
+        $(".eden-modal-cover").alt = song.title;
+        $(".eden-modal-title").textContent = song.title;
+        $(".eden-modal-date").textContent = song.date;
+        $(".eden-modal-description").textContent = song.description;
+
+        modal.hidden = false;
+        document.body.style.overflow = "hidden";
+        closeButton.focus();
+      }
+
+      root.querySelectorAll(".eden-open-detail").forEach(button => {
+        button.addEventListener("click", () => {
+          openModal(Number(button.dataset.song), button);
+        });
+      });
+
+      closeButton.addEventListener("click", closeModal);
+
+      modal.addEventListener("click", event => {
+        if (event.target === modal) closeModal();
+      });
+
+      document.addEventListener("keydown", event => {
+        if (!modal.hidden && event.key === "Escape") closeModal();
+      });
+    })();
+  </script>
+</div>
