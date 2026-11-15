@@ -965,3 +965,48 @@ header {
   }
 
 }
+
+/* TOP MAIN IMAGE */
+.hero {
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  aspect-ratio: auto;
+
+  background-image: url("パナー/EDEN.png");
+  background-size: 100% auto;
+  background-position: center top;
+  background-repeat: no-repeat;
+
+  display: block;
+  padding: 0;
+}
+
+/* TOP画像のみ変更・ヘッダーはそのまま */
+.hero {
+  display: block;
+  width: 100%;
+  height: auto;
+  min-height: 0;
+  max-height: none;
+  padding: 0;
+  overflow: hidden;
+  background: none;
+}
+
+.hero::before {
+  display: none;
+}
+
+.hero > img {
+  display: block;
+  width: 100%;
+  height: auto;
+  object-fit: contain;
+}
+
+.hero {
+  margin-top: 80px;
+}
+
